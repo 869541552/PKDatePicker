@@ -117,10 +117,14 @@ inline static CGFloat screenHeight()
             dayIndex = [_minYearDayArray indexOfObject:[NSString stringWithFormat:@"%lu",day]];
         }
     }
+    yearSelectIndex = yearIndex;
+    monthSelectIndex = monthIndex;
+    daySelectIndex = dayIndex;
     [self.datePicker selectRow:yearIndex inComponent:0 animated:YES];
     [self.datePicker selectRow:monthIndex inComponent:1 animated:YES];
     [self.datePicker selectRow:dayIndex inComponent:2 animated:YES];
-    //    [self.datePicker reloadAllComponents];
+
+//    [self.datePicker reloadAllComponents];
 }
 
 -(void)setUpViews
@@ -219,32 +223,49 @@ inline static CGFloat screenHeight()
     [self hidePicker];
 }
 
+- (BOOL)anySubViewScrolling:(UIView *)view{
+    if ([view isKindOfClass:[UIScrollView class]]) {
+        UIScrollView *scrollView = (UIScrollView *)view;
+        if (scrollView.dragging || scrollView.decelerating) {
+            return YES;
+        }
+    }
+    for (UIView *theSubView in view.subviews) {
+        if ([self anySubViewScrolling:theSubView]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
 -(IBAction)doneAction:(id)sender
 {
-    [self hidePicker];
-    NSInteger yearIndex = [self.datePicker selectedRowInComponent:0];
-    NSInteger monthIndex = [self.datePicker selectedRowInComponent:1];
-    NSInteger dayIndex = [self.datePicker selectedRowInComponent:2];
-    NSInteger year = [self.yearArray[yearIndex] integerValue];
-    NSInteger month = monthIndex + 1;
-    NSInteger day = dayIndex + 1;
-    if (minYear == year) {
-        month = [_minYearMonthArray[monthIndex] integerValue];
-        if (month == minMonth) {
-            day = [_minYearDayArray[dayIndex] integerValue];
+    if (![self anySubViewScrolling:self.datePicker]) {
+        [self hidePicker];
+        NSInteger yearIndex = [self.datePicker selectedRowInComponent:0];
+        NSInteger monthIndex = [self.datePicker selectedRowInComponent:1];
+        NSInteger dayIndex = [self.datePicker selectedRowInComponent:2];
+        NSInteger year = [self.yearArray[yearIndex] integerValue];
+        NSInteger month = monthIndex + 1;
+        NSInteger day = dayIndex + 1;
+        if (minYear == year) {
+            month = [_minYearMonthArray[monthIndex] integerValue];
+            if (month == minMonth) {
+                day = [_minYearDayArray[dayIndex] integerValue];
+            }
         }
-    }
-    else if (maxYear == year)
-    {
-        month = [_maxYearMonthArray[monthIndex] integerValue];
-        if (maxMonth == month) {
-            day = [_maxYearDayArray[dayIndex] integerValue];
+        else if (maxYear == year)
+        {
+            month = [_maxYearMonthArray[monthIndex] integerValue];
+            if (maxMonth == month) {
+                day = [_maxYearDayArray[dayIndex] integerValue];
+            }
         }
-    }
-    NSString *dateStr = [NSString stringWithFormat:@"%lu-%lu-%lu",year,month,day];
-    NSLog(@"选择的时间为%@",dateStr);
-    if (self.finishDoneBlock) {
-        self.finishDoneBlock(dateStr);
+        NSString *dateStr = [NSString stringWithFormat:@"%lu-%lu-%lu",year,month,day];
+        NSLog(@"选择的时间为%@",dateStr);
+        if (self.finishDoneBlock) {
+            self.finishDoneBlock(dateStr);
+        }
     }
 }
 
