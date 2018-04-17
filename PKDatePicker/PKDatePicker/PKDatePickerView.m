@@ -278,8 +278,8 @@ inline static CGFloat screenHeight()
     self.maxYearDayArray = [NSMutableArray array];
     self.minYearMonthArray = [NSMutableArray array];
     self.maxYearMonthArray = [NSMutableArray array];
-    leapDays = @[@"31",@"28",@"31",@"30",@"31",@"30",@"31",@"31",@"30",@"31",@"30",@"31"];
-    notLeapDays = @[@"31",@"29",@"31",@"30",@"31",@"30",@"31",@"31",@"30",@"31",@"30",@"31"];
+    leapDays = @[@"31",@"29",@"31",@"30",@"31",@"30",@"31",@"31",@"30",@"31",@"30",@"31"];
+    notLeapDays = @[@"31",@"28",@"31",@"30",@"31",@"30",@"31",@"31",@"30",@"31",@"30",@"31"];
     [dateFormatter setDateFormat:@"yyyy"];
     minYear = [[dateFormatter stringFromDate:_minimumDate] integerValue];
     maxYear = [[dateFormatter stringFromDate:_maximumDate] integerValue];
